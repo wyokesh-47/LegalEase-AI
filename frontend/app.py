@@ -11,6 +11,7 @@ if str(BASE_DIR) not in sys.path:
 
 import config
 from ai_core.generator import sanitize_text, format_docx, format_pdf, format_html_preview
+from legalEaseAPI.firebase_manager import firebase_manager
 
 # Milestone 4: Page Configuration and Layout Setup
 st.set_page_config(page_title="LegalEase", layout="centered")
@@ -107,7 +108,8 @@ if generate_btn:
                     "document_type": doc_type_val,
                     "parties": parties_val,
                     "terms": terms_val,
-                    "dates": dates_val
+                    "dates": dates_val,
+                    "save_to_firebase": True
                 },
                 timeout=60
             )
@@ -116,10 +118,12 @@ if generate_btn:
             else:
                 raw_text = ""
         except Exception:
-            # Direct generation fallback if backend server is not running
+            # Direct generation fallback if backend call fails
             from ai_core.gemini_generator import GeminiDocumentGenerator
             gen = GeminiDocumentGenerator()
             raw_text = gen.generate_document(doc_type_val, parties_val, terms_val, dates_val)
+            if firebase_manager.is_configured:
+                firebase_manager.save_document(doc_type_val, parties_val, terms_val, dates_val, raw_text)
 
         if raw_text:
             st.session_state.generated_text = sanitize_text(raw_text)
@@ -149,6 +153,22 @@ if st.session_state.generated_text:
         )
         if edited_text != st.session_state.generated_text:
             st.session_state.generated_text = edited_text
+            
+            # Sync edits to backend & Firebase
+            try:
+                requests.post(
+                    f"{config.BACKEND_URL}/documents/save",
+                    json={
+                        "document_type": st.session_state.current_doc_type,
+                        "parties": parties if parties else "",
+                        "terms": terms if terms else "",
+                        "dates": dates if dates else "",
+                        "document_text": edited_text
+                    },
+                    timeout=5
+                )
+            except Exception:
+                pass
     
     # Step 4: Multi-Format Download Options
     safe_name = st.session_state.current_doc_type.replace(" ", "_").replace("/", "_").lower()

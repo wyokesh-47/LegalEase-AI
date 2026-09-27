@@ -1,6 +1,6 @@
 # LegalEase: AI-Powered Legal Document Generator ⚖️
 
-LegalEase is an AI-powered legal document generation platform built with **FastAPI**, **Streamlit**, and **Google Gemini Generative AI**. It enables users to quickly draft, customize, preview, inline-edit, and export formal legal agreements (NDAs, Freelance Contracts, Lease Agreements, Employment Offer Letters, etc.) into **.PDF**, **.DOCX**, and **.TXT** formats.
+LegalEase is an AI-powered legal document generation platform built with **FastAPI**, **Streamlit**, **Google Gemini Generative AI**, and **Firebase Firestore**. It enables users to quickly draft, customize, preview, inline-edit, and export formal legal agreements (NDAs, Freelance Contracts, Lease Agreements, Employment Offer Letters, etc.) into **.PDF**, **.DOCX**, and **.TXT** formats.
 
 ---
 
@@ -11,7 +11,7 @@ LegalEase is an AI-powered legal document generation platform built with **FastA
    - Built-in legal template engine for reliable fallback execution.
 2. **FastAPI Microservice Backend**:
    - `/generate` POST endpoint with Pydantic schema validation.
-   - High-throughput asynchronous routing.
+   - `/documents` history endpoints for Firebase Firestore synchronization.
 3. **Interactive Streamlit Web UI**:
    - Sleek dark theme matching professional modern legal suites.
    - Branded header logo and dynamic preview card.
@@ -21,6 +21,8 @@ LegalEase is an AI-powered legal document generation platform built with **FastA
    - **.TXT**: Clean UTF-8 plain text document.
    - **.DOCX**: Formatted Microsoft Word document with embedded branding, Times New Roman typography, and signature sections.
    - **.PDF**: Branded PDF with centered company logo, styled headings, and multi-page footers.
+6. **Cloud Storage**:
+   - Optional Firebase Firestore integration to store document history.
 
 ---
 
@@ -41,6 +43,7 @@ LEGALEASE
 │   └── generate_logos.py        # Asset generation script
 ├── legalEaseAPI/
 │   ├── __init__.py
+│   ├── firebase_manager.py      # Firebase Firestore integration
 │   ├── main.py                  # FastAPI initialization & server
 │   └── routes.py                # POST /generate endpoint & request models
 ├── .env                         # API keys & environment variables
@@ -60,11 +63,20 @@ LEGALEASE
 pip install -r requirements.txt
 ```
 
-### 2. Configure Gemini API Key
+### 2. Configure Environment Keys
 Create or edit `.env` in the root folder:
 ```env
 GEMINI_API_KEY=your_google_gemini_api_key
 GEMINI_MODEL=gemini-2.5-flash
+
+# Firebase Web App Configuration (Optional)
+FIREBASE_API_KEY=""
+FIREBASE_AUTH_DOMAIN=""
+FIREBASE_PROJECT_ID=""
+FIREBASE_STORAGE_BUCKET=""
+FIREBASE_MESSAGING_SENDER_ID=""
+FIREBASE_APP_ID=""
+FIREBASE_MEASUREMENT_ID=""
 ```
 
 ---
@@ -83,10 +95,9 @@ run.bat
    ```bash
    py -3.13 -m uvicorn legalEaseAPI.main:app --host 0.0.0.0 --port 8000 --reload
    ```
-   *Swagger API Documentation available at: [http://localhost:8000/docs](http://localhost:8000/docs)*
 
 2. **Start the Streamlit Frontend**:
    ```bash
    py -3.13 -m streamlit run frontend/app.py
    ```
-   *Web application opens automatically at: [http://localhost:8501](http://localhost:8501)*
+   *Web application opens at: [http://localhost:8501](http://localhost:8501)*
