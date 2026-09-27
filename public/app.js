@@ -1,22 +1,3 @@
-// Import Firebase SDK modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
-
-// Firebase Configuration from your project
-const firebaseConfig = {
-  apiKey: "AIzaSyD06j-Zi0iqpSVEx941ZC148IZTOjSPbR8",
-  authDomain: "legalease-ai-3486c.firebaseapp.com",
-  projectId: "legalease-ai-3486c",
-  storageBucket: "legalease-ai-3486c.firebasestorage.app",
-  messagingSenderId: "208353491643",
-  appId: "1:208353491643:web:164390acf14c512978c79e",
-  measurementId: "G-V8W545KPZZ"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
 // DOM Elements
 const docTypeInput = document.getElementById("docType");
 const partiesInput = document.getElementById("parties");
@@ -34,7 +15,6 @@ const downloadDocxBtn = document.getElementById("downloadDocxBtn");
 const downloadPdfBtn = document.getElementById("downloadPdfBtn");
 
 let generatedDocumentText = "";
-let currentDocId = null;
 
 // Template Generator Fallback
 function generateLegalTemplate(docType, parties, terms, dates) {
@@ -148,23 +128,6 @@ generateBtn.addEventListener("click", async () => {
   try {
     // Generate text via smart generator or local API
     generatedDocumentText = generateLegalTemplate(docType, parties, terms, dates);
-
-    // Save to Firebase Firestore Cloud
-    try {
-      const docRef = await addDoc(collection(db, "legal_documents"), {
-        document_type: docType,
-        parties: parties,
-        terms: terms,
-        dates: dates,
-        document_text: generatedDocumentText,
-        created_at: serverTimestamp(),
-        created_date: new Date().toLocaleString()
-      });
-      currentDocId = docRef.id;
-      console.log("Document successfully saved to Firebase Firestore with ID:", currentDocId);
-    } catch (fbErr) {
-      console.warn("Firestore save warning:", fbErr);
-    }
 
     // Display Output
     previewCard.innerHTML = formatHtmlPreview(generatedDocumentText);
