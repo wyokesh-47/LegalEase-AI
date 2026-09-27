@@ -1,0 +1,31 @@
+# Environment & Secrets
+.env
+
+# Firebase cache & debug logs
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*/__pycache__/
+*/*/__pycache__/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
