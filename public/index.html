@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LegalEase - AI Legal Document Generator</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- jsPDF for direct PDF download in browser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="Logo.png" alt="LegalEase Logo" class="logo-img" onerror="this.src='inverseLogo.png'">
+      <h2 class="sub-title">AI Legal Document Generator</h2>
+      <p class="desc">Create customizable, accurate, and editable legal documents in seconds.</p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="docType">Document Type (Ex: Agreement, Contract, NDA)</label>
+      <input type="text" id="docType" class="form-input" placeholder="Freelance Work Contract" value="Freelance Work Contract">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="parties">Parties Involved</label>
+      <textarea id="parties" class="form-textarea" rows="3" placeholder="Jane Doe (Service Provider), TechNova Inc. (Client)">Jane Doe (Service Provider), TechNova Inc. (Client)</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="terms">Terms & Conditions (Use semicolons for bullet points)</label>
+      <textarea id="terms" class="form-textarea" rows="4" placeholder="Work must be delivered by May 15, 2025;&#10;Payment will be made within 7 days of invoice;&#10;Client retains intellectual property rights.">Work must be delivered by May 15, 2025;&#10;Payment will be made within 7 days of invoice;&#10;Client retains all intellectual property rights;&#10;Confidentiality must be maintained at all times;&#10;Either party may terminate with 15 days notice.</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="dates">Effective Date</label>
+      <input type="text" id="dates" class="form-input" placeholder="April 15, 2025" value="April 15, 2025">
+    </div>
+
+    <div style="display: flex; align-items: center; margin-top: 20px;">
+      <button id="generateBtn" class="btn-generate">
+        <span id="btnText">Generate Document</span>
+      </button>
+      <span class="hint-text">ℹ️ Click 'Generate Document' to start</span>
+    </div>
+
+    <!-- Generated Document Output Section -->
+    <div id="outputSection" class="output-section">
+      <div class="success-alert">
+        <span>✅</span>
+        <span>Document Generated Successfully! (Saved to Firebase Firestore ☁️)</span>
+      </div>
+
+      <div id="previewCard" class="preview-box"></div>
+
+      <div style="margin-bottom: 15px;">
+        <button id="toggleEditBtn" class="btn-secondary" style="width: auto; padding: 6px 14px;">
+          🖊️ Click to Edit Document
+        </button>
+      </div>
+
+      <div id="editorContainer" class="editor-box">
+        <label class="form-label">Edit Document Below:</label>
+        <textarea id="docEditor" class="form-textarea" rows="12"></textarea>
+      </div>
+
+      <div class="action-row">
+        <button id="downloadTxtBtn" class="btn-secondary">📄 Download as .TXT</button>
+        <button id="downloadDocxBtn" class="btn-secondary">📝 Download as .DOCX</button>
+        <button id="downloadPdfBtn" class="btn-secondary">📕 Download as .PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
