@@ -107,8 +107,7 @@ if generate_btn:
                     "document_type": doc_type_val,
                     "parties": parties_val,
                     "terms": terms_val,
-                    "dates": dates_val,
-                    "save_to_firebase": True
+                    "dates": dates_val
                 },
                 timeout=60
             )
@@ -117,7 +116,7 @@ if generate_btn:
             else:
                 raw_text = ""
         except Exception:
-            # Direct generation fallback if backend call fails
+            # Direct generation fallback if backend server is not running
             from ai_core.gemini_generator import GeminiDocumentGenerator
             gen = GeminiDocumentGenerator()
             raw_text = gen.generate_document(doc_type_val, parties_val, terms_val, dates_val)
@@ -150,22 +149,6 @@ if st.session_state.generated_text:
         )
         if edited_text != st.session_state.generated_text:
             st.session_state.generated_text = edited_text
-            
-            # Silently sync edits to backend & Firebase
-            try:
-                requests.post(
-                    f"{config.BACKEND_URL}/documents/save",
-                    json={
-                        "document_type": st.session_state.current_doc_type,
-                        "parties": parties if parties else "",
-                        "terms": terms if terms else "",
-                        "dates": dates if dates else "",
-                        "document_text": edited_text
-                    },
-                    timeout=5
-                )
-            except Exception:
-                pass
     
     # Step 4: Multi-Format Download Options
     safe_name = st.session_state.current_doc_type.replace(" ", "_").replace("/", "_").lower()
